@@ -1,21 +1,16 @@
 class Solution {
 public:
-    int robber(vector<int>&nums,int n,int i,vector<int>&dp){
-        if(i>=n){
-            return 0;
-        }
-        if(dp[i]!=-1){
-            return dp[i];
-        }
-        int take=nums[i]+robber(nums,n,i+2,dp);
-        int skip=robber(nums,n,i+1,dp);
-        dp[i]=max(take,skip);
-        return dp[i];
-    }
     int rob(vector<int>& nums) {
         int n=nums.size();
+        if(n==1){
+            return nums[0];
+        }
         vector<int>dp(n,-1);
-        int ans=robber(nums,n,0,dp);
-        return ans;
+        dp[n-1]=nums[n-1];
+        dp[n-2]=max(nums[n-1],nums[n-2]);
+        for(int i=(n-3);i>=0;i--){
+            dp[i]=max(nums[i]+dp[i+2],dp[i+1]);
+        }
+        return dp[0];
     }
 };
