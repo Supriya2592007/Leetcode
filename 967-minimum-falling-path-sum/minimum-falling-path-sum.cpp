@@ -1,39 +1,30 @@
 class Solution {
 public:
-    int minFallingPathSum(vector<vector<int>>& v) {
-         int n=v.size();
-        vector<vector<int>>dp(n,vector<int>(n,-1));
-        for(int j=0;j<n;j++){
-            dp[n-1][j]=v[n-1][j];
+    int mini_sum(vector<vector<int>>&v,vector<vector<int>>&dp,int i,int j,int n){
+        if(j<0||j>=n||i>=n){
+            return INT_MAX;
         }
-       for(int i=(n-2);i>=0;i--){
-        for(int j=0;j<n;j++){
-            int mini=INT_MAX;
-            int c1=j-1;
-            if(c1>=0&&c1<n){
-                mini=min(mini,dp[i+1][c1]);
-            }
-              c1=j;
-            if(c1>=0&&c1<n){
-                mini=min(mini,dp[i+1][c1]);
-            }
-              c1=j+1;
-            if(c1>=0&&c1<n){
-                mini=min(mini,dp[i+1][c1]);
-            }
-            dp[i][j]=v[i][j]+mini;
+        if(dp[i][j]!=-101){
+            return dp[i][j];
         }
-       }
-       for(int i=0;i<n;i++){
+        int left=mini_sum(v,dp,i+1,j-1,n);
+        int bot=mini_sum(v,dp,i+1,j,n);
+        int right=mini_sum(v,dp,i+1,j+1,n);
+        dp[i][j]=v[i][j]+min(left,min(bot,right));
+        return dp[i][j];
+    }
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+         int n=matrix.size();
+        vector<vector<int>>dp(n,vector<int>(n,-101));
         for(int j=0;j<n;j++){
-            cout<<dp[i][j]<<" ";
+            dp[n-1][j]=matrix[n-1][j];
         }
-        cout<<endl;
-       }
-       int mini=INT_MAX;
-       for(int j=0;j<n;j++){
-        mini=min(mini,dp[0][j]);
-       }
-       return mini;
+        int mini=INT_MAX;
+        for(int j=0;j<n;j++){
+            int res=mini_sum(matrix,dp,0,j,n);
+            mini=min(res,mini);
+        }
+        cout<<n<<endl;
+        return mini;
     }
 };
